@@ -1,6 +1,5 @@
 //menggunakan exec
-//wget,zip unzip berada pada "/usr/bin/"
-//download -> unzip -> tunggu -> zip
+//mkdir -> download -> unzip -> mv -> tunggu -> zip -> delete
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/wait.h> 
+#include <dirent.h>
 
 int main() {
   pid_t pids, sids;        // Variabel untuk menyimpan PID
@@ -38,7 +38,7 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
-  if ((chdir("/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021")) < 0) {
+  if ((chdir("/home/osd0081/Desktop/Sisop")) < 0) {
     exit(EXIT_FAILURE);
   }
 
@@ -81,14 +81,41 @@ int main() {
 
         int i, stat;
         pid_t pid[1];
+        
         for (i=0; i<3; i++)
         {
             if ((pid[i] = fork()) == 0)
             {
-                char *argv[] = {"wget", "--no-check-certificate",link[i],"-O",rn[i], NULL};
-                execv("/usr/bin/wget", argv);
-                sleep(10);
-                exit(100 + i);
+                pid_t rm;
+                if ((rm = fork()) == 0)
+                {    
+                    pid_t am;
+                    if((am=fork())==0)
+                    {
+                        char *argv[] = {"mkdir",n[i], NULL};
+                        execv("/bin/mkdir", argv);
+                        sleep(10);
+                        exit(100 + i);
+                    }else{
+                        waitpid(am,&stat,0);
+                        if (WIFEXITED(stat))
+                        {
+                            char *argv[] = {"wget", "--no-check-certificate",link[i],"-O",rn[i], NULL};
+                            execv("/usr/bin/wget", argv);
+                            sleep(10);
+                            exit(100 + i);
+                        }
+                    }
+                }else{
+                    waitpid(rm,&stat,0);
+                    if (WIFEXITED(stat))
+                    {
+                        char *argv[] = {"unzip",rn[i], NULL};
+                        execv("/usr/bin/unzip", argv);
+                        sleep(10);
+                        exit(100 + i);
+                    }
+                }
             }else{
                 waitpid(pid[i], &stat,0);
             }
@@ -97,48 +124,37 @@ int main() {
         if (WIFEXITED(stat))
         {
             printf("\n");
-            
+            DIR *dp;
+            struct dirent *ep;
+            char file[50];
+            char target[50];
+            char path[100];
+        
             for (i=0; i<3; i++)
             {
-                if ((pid[i] = fork()) == 0)
-                {
-                    pid_t rm;
-                    if ((rm = fork()) == 0)
-                    {    
-                        char *argv[] = {"unzip",rn[i], NULL};
-                        execv("/usr/bin/unzip", argv);
-                        sleep(10);
-                        exit(100 + i);
-                    }else{
-
-                        // opsional tergantung boleh atau engga
-
-                        waitpid(rm,&stat,0);
-                        if (WIFEXITED(stat)){
-                            char *argv[] = {"rm",rn[i], NULL};
-                            execv("/bin/rm", argv);
+                getcwd(path, sizeof(path));
+                strcat(path,"/");
+                strcpy(target,"");
+                strcpy(target,path);
+                strcat(target,n[i]);
+                strcat(path,n1[i]);
+                dp = opendir(path);
+                while ((ep = readdir (dp))) {
+                        strcpy(file,"");
+                        strcpy(file,path);
+                        if (strcmp(ep->d_name, ".") != 0 && strcmp(ep->d_name, "..") != 0){
+                            if ((pid[i] = fork()) == 0)
+                            {
+                                    strcat(file,"/");
+                                    strcat(file,ep->d_name);
+                                    char *argv[] = {"mv",file, target, NULL};
+                                    execv("/bin/mv", argv);      
+                                sleep(10);
+                                exit(100 + i);
+                            }else{
+                                waitpid(pid[i], &stat,0);
+                            }
                         }
-                    }
-                }else{
-                    waitpid(pid[i], &stat,0);
-                }
-            }
-        }
-
-        if (WIFEXITED(stat))
-        {
-            printf("\n");
-            
-            for (i=0; i<3; i++)
-            {
-                if ((pid[i] = fork()) == 0)
-                {
-                    char *argv[] = {"mv",n1[i],n[i], NULL};
-                    execv("/bin/mv", argv);
-                    sleep(10);
-                    exit(100 + i);
-                }else{
-                    waitpid(pid[i], &stat,0);
                 }
             }
         }
@@ -162,7 +178,7 @@ int main() {
         }else{
             waitpid(rm,&stat,0);
             if (WIFEXITED(stat)){
-                char *argv[] = {"rm","-r",n[0],n[1],n[2], NULL};
+                char *argv[] = {"rm","-r",n[0],n[1],n[2],n1[0],n1[1],n1[2], NULL};
                 execv("/bin/rm", argv);
             }
         }
