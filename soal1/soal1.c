@@ -165,7 +165,7 @@ int main() {
     else if (timeinfo->tm_mon == 3 && timeinfo->tm_mday== 9 && timeinfo->tm_hour== 22 && timeinfo->tm_min==22 && timeinfo->tm_sec==0){
 
         // komponen zip
-
+        
         if ((pid = fork()) == 0)
         {    
             char *argv[] = {"zip","-r","Lopyu_Stevany.zip",n[0],n[1],n[2], NULL};
@@ -181,8 +181,6 @@ int main() {
         }
 
     }
-  
   sleep(1);
-  
   }
 }
