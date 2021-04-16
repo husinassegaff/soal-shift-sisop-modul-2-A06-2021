@@ -98,16 +98,12 @@ int main() {
                     {
                         char *argv[] = {"mkdir",n[i], NULL};
                         execv("/bin/mkdir", argv);
-                        sleep(10);
-                        exit(100 + i);
                     }else{
                         waitpid(pid,&stat,0);
                         if (WIFEXITED(stat))
                         {
                             char *argv[] = {"wget", "--no-check-certificate",link[i],"-O",rn[i], NULL};
                             execv("/usr/bin/wget", argv);
-                            sleep(10);
-                            exit(100 + i);
                         }
                     }
                 }else{
@@ -118,8 +114,6 @@ int main() {
                         {
                             char *argv[] = {"unzip",rn[i], NULL};
                             execv("/usr/bin/unzip", argv);
-                            sleep(10);
-                            exit(100 + i);
                         }else{
                             waitpid(pid,&stat,0);
                             if (WIFEXITED(stat))
@@ -141,8 +135,6 @@ int main() {
                                                 strcat(file,ep->d_name);
                                                 char *argv[] = {"mv",file, target, NULL};
                                                 execv("/bin/mv", argv);      
-                                            sleep(10);
-                                            exit(100 + i);
                                         }else{
                                             waitpid(pid, &stat,0);
                                         }
@@ -170,8 +162,6 @@ int main() {
         {    
             char *argv[] = {"zip","-r","Lopyu_Stevany.zip",n[0],n[1],n[2], NULL};
             execv("/usr/bin/zip", argv);
-            sleep(10);
-            exit(100 + i);
         }else{
             waitpid(pid,&stat,0);
             if (WIFEXITED(stat)){
