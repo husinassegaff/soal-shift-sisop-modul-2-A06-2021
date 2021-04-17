@@ -1,168 +1,92 @@
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
+#include <sys/types.h>
 #include <wait.h>
 #include <string.h>
+#include <dirent.h>
 
-int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    printf("ERROR! Argumen Salah\n");
-    return 1;
-  }
-  if (strcmp(argv[1], "-a") != 0 && strcmp(argv[1], "-b") != 0) {
-    printf("ERROR! Mode Salah\n");
-    return 1;
-  }
+char buffer[80];
+char site[80];
 
-  pid_t pid, sid;
-  pid = fork();
+void buatfolder(char namafolder[])
+{
+    char *argv[] = {"mkdir", "-p", namafolder, NULL};
+    execv("/bin/mkdir", argv);
+    return;
+}
 
-  if (pid < 0) {
-    exit(EXIT_FAILURE);
-  }
+void setwaktusekarang()
+{
+    time_t rawtime;
+    struct tm *info;
+    time( &rawtime );
+    info = localtime( &rawtime );
+    strftime(buffer,80,"%Y-%m-%d_%H:%M:%S", info);
+}
 
-  if (pid > 0) {
-    exit(EXIT_SUCCESS);
-  }
-
-  sid = setsid();
-  if (sid < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  FILE *pFile;
-  pFile = fopen("killer.c", "w");
-
-  if (strcmp(argv[1], "-a") == 0) {
-    char *inp = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"pkill\", \"-9\", \"-s\", \"%d\", NULL};\n"
-        "execv(\"/usr/bin/pkill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
-    fprintf(pFile, inp, sid);
-  }
-
-  if (strcmp(argv[1], "-b") == 0) {
-    char *inp = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"kill\", \"-9\", \"%d\", NULL};\n"
-        "execv(\"/bin/kill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
-    fprintf(pFile, inp, getpid());
-  }
-
-  fclose(pFile);
-
-  pid = fork();
-  if (pid == 0) {
-    char *argv[] = {"gcc", "killer.c", "-o", "killer", NULL};
-    execv("/usr/bin/gcc", argv);
-  }
-  while(wait(NULL) != pid);
-
-  pid = fork();
-  if (pid == 0) {
-    char *argv[] = {"rm", "killer.c", NULL};
-    execv("/bin/rm", argv);
-  }
-  while(wait(NULL) != pid);
-
-  close(STDIN_FILENO);
-  close(STDERR_FILENO);
-  close(STDOUT_FILENO);
-
-  while(1) {
+void getlink()
+{
     time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
-    char now[80], location[160];
-    strftime(now, 80, "%Y-%m-%d_%H:%M:%S", tm);
+    sprintf(site, "https://picsum.photos/%ld", ((t%1000)+100));
+    return;
+}
 
+void downloadgambar(char dir[])
+{
+    
+    char *argv[] = {"wget", "-q", "-O", dir , site, NULL};
+    execv("/usr/bin/wget", argv);
+}
+
+int main ()
+{
     pid_t child_id;
     child_id = fork();
-
-    if (child_id == 0) {
-      char *argv[] = {"mkdir", now, NULL};
-      execv("/bin/mkdir", argv);
-    }
-    
-    child_id = fork();
-    if (child_id == 0) {
-
-      for (int i = 0; i < 10; i++) {
-
-        child_id = fork();
-        if (child_id == 0) {
-
-          t = time(NULL);
-          tm = localtime(&t);
-          char new_now[80], link[80];
-          strftime(new_now, 80, "%Y-%m-%d_%H:%M:%S", tm);
-          sprintf(location, "%s/%s", now, new_now);
-          sprintf(link, "https://picsum.photos/%ld", ((t%1000)+50));
-          char *argv[] = {"wget", "-O", location, link, NULL};
-          execv("/usr/bin/wget", argv);
-
+    int status;
+    if (child_id==0)
+    {
+        while(1)
+        {
+            pid_t child_id;
+            child_id = fork();
+            setwaktusekarang();
+            if (child_id == 0)
+                buatfolder(buffer);
+            while(wait(&status) > 0);
+            sleep(40);
         }
+    }
+    else
+    {
+        sleep(1);
+        DIR *dp;
+        struct dirent *ep;
+        char path[]="/home/soraas/shiftmodul2/soal3folder";
 
-        sleep(5);
+        dp = opendir(path);
 
-      }
-
-        child_id = fork();
-        if (child_id == 0) {
-            char where[50];
-            char enkripsi[]={"Download Success"};
-            int i;
-            
-            // fungsi caesar
-            for(i=0;i < strlen(enkripsi);i++){
-                enkripsi[i]=enkripsi[i]+5;
+        if (dp != NULL)
+        {
+            while ((ep = readdir (dp))) 
+            {
+                if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0)
+                    continue;
+                char dir[500];
+                for (int a=0;a<10;a++)
+                {
+                    setwaktusekarang();
+                    sprintf(dir, "%s/%s",ep->d_name,buffer);
+                    printf("%s\n",dir);
+                    child_id = fork();
+                    getlink();
+                    if (child_id==0)
+                        downloadgambar(dir);
+                    sleep(5);
+                }
             }
-            
-            strcpy(where,("%s/status.txt",now));
-            char *argv[] = {"echo", enkripsi,">>",where, NULL};
-            execv("echo", argv);
-        }
-        while(wait(NULL) != child_id);
-
-
-
-      while(wait(NULL) > 0);
-      child_id = fork();
-      if (child_id == 0) {
-
-        char nama_file[80];
-        sprintf(nama_file, "%s.zip", now);
-        char *argv[] = {"zip", "-r", nama_file, now, NULL};
-        execv("/usr/bin/zip", argv);
-
-      }
-
-      while(wait(NULL) != child_id);
-      char *argv[] = {"rm", "-r", now, NULL};
-      execv("/bin/rm", argv);
-
+        (void) closedir (dp);
+        } else perror ("Couldn't open the directory");
     }
-
-    sleep(40);
-
-  }
 }
