@@ -186,13 +186,19 @@ void listDir(char *basePath)
                     continue;
                 }else if((notif%2)==0&& cek == 1){
                     
-                    age = strtok(token, "jpg");
-                    while(age != NULL){
-                        age[strlen(age)-1] = '\0';
+                    if(strstr(token,"jpg")!= NULL){
+                        age = strtok(token, "jpg");
+                        while(age != NULL){
+                            age[strlen(age)-1] = '\0';
+                            fp = fopen(echoke,"a");
+                            fprintf(fp,"umur : %s\n\n",age);
+                            fclose(fp);
+                            age = strtok(NULL, ".jpg");
+                    }
+                    }else{
                         fp = fopen(echoke,"a");
-                        fprintf(fp,"umur : %s\n\n",age);
+                        fprintf(fp,"umur : %s\n\n",token);
                         fclose(fp);
-                        age = strtok(NULL, ".jpg");
                     } 
                     notif++;
                     token = strtok(NULL, semicolon);
