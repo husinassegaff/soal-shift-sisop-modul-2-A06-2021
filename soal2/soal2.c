@@ -6,7 +6,7 @@
 #include <wait.h>
 #include <dirent.h>
 
-char ziplocation[] = "/home/osd0081/Desktop/Sisop/petshop";
+char ziplocation[] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
 const char semicolon[] = ";";
 const char udr[] = "_";
 
@@ -31,7 +31,7 @@ void listDir(char *basePath)
 
     char typepetsfoldername[200] = "";
     char filepetsname[100] = "";
-    char typepetslocation[100] = "/home/osd0081/Desktop/Sisop/petshop";
+    char typepetslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
     char *token;
     char *limit;
     char *age;
@@ -52,14 +52,13 @@ void listDir(char *basePath)
 
     while ((dp = readdir(dir)))
     {
-        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 )
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_type == DT_DIR)
         {
-            if(dp->d_type == DT_DIR){
-                char petslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
-                strcat(petslocation, dp->d_name);
-                char *argvrmfolder[] = {"rm", "-rf", petslocation, NULL};
-                ForkWaitFunction("/bin/rm", argvrmfolder);
-            } 
+            char petslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
+            strcat(petslocation,"/");
+            strcat(petslocation, dp->d_name);
+            char *argvrmfolder[] = {"rm", "-rf", petslocation, NULL};
+            ForkWaitFunction("/bin/rm", argvrmfolder);
         }
     }
     DIR *mer = opendir(basePath);
@@ -204,7 +203,6 @@ void listDir(char *basePath)
 
             char *argvrm[] = {"rm", filepetsname, NULL};
             ForkWaitFunction("/bin/rm", argvrm);
-
         }
     }
     closedir(dir);
