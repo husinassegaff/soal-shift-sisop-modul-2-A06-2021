@@ -36,57 +36,42 @@ void getlink()
 void downloadgambar(char dir[])
 {
     
-    char *argv[] = {"wget", "-q", "-O", dir , site, NULL};
+    char *argv[] = {"wget", "-q" ,"-O", dir , site, NULL};
     execv("/usr/bin/wget", argv);
 }
 
 int main ()
 {
+    int firstrun=1;
     pid_t child_id;
-    child_id = fork();
-    int status;
-    if (child_id==0)
+    while(1)
     {
-        while(1)
+        setwaktusekarang();
+        child_id = fork();
+        if (child_id == 0)
         {
-            pid_t child_id;
-            child_id = fork();
-            setwaktusekarang();
-            if (child_id == 0)
-                buatfolder(buffer);
-            while(wait(&status) > 0);
-            sleep(40);
+            buatfolder(buffer);
         }
-    }
-    else
-    {
-        sleep(1);
-        DIR *dp;
-        struct dirent *ep;
-        char path[]="/home/soraas/shiftmodul2/soal3folder";
-
-        dp = opendir(path);
-
-        if (dp != NULL)
+        child_id = fork();
+        while (opendir(buffer) == NULL);
+        char dir[80];
+        strcpy(dir,buffer);
+        child_id = fork();
+        if (child_id == 0)
         {
-            while ((ep = readdir (dp))) 
+            for (int a=0;a<10;a++)
             {
-                if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0)
-                    continue;
-                char dir[500];
-                for (int a=0;a<10;a++)
-                {
-                    setwaktusekarang();
-                    sprintf(dir, "%s/%s",ep->d_name,buffer);
-                    printf("%s\n",dir);
-                    child_id = fork();
-                    getlink();
-                    if (child_id==0)
-                        downloadgambar(dir);
-                    sleep(5);
-                }
+                printf("Download Success\n");
+                getlink();
+                child_id = fork();
+                setwaktusekarang();
+                char finaldir[100];
+                sprintf(finaldir,"%s/%s",dir,buffer);
+                if (child_id==0)
+                    downloadgambar(finaldir);
+                sleep(5);
             }
-        (void) closedir (dp);
-        } else perror ("Couldn't open the directory");
+        }
+        sleep(40);
     }
 }
