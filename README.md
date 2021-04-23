@@ -4,7 +4,7 @@ Jawaban soal praktikum Sistem Operasi modul 2.
 **Anggota kelompok**:
 ```
 - Richard Asmarakandi       05111940000017
-- Muhammad Rafki Mardi      0511194000054
+- Muhammad Rafki Mardi      05111940000054
 - Husin Muhammad Assegaff   05111940000127
 ```
 ---
@@ -426,7 +426,7 @@ selesai.
 ```
 **Bukti Periode Pertama:**
 
-![Bukti1A](soal1/)
+https://user-images.githubusercontent.com/74223938/115844419-fda5c700-a449-11eb-8890-e513f2e1900f.mp4
 
 *Soal 1.a hingga 1.d berjalan saat kondisi waktu adalah 9 April dan waktu pukul 22:22:00.*
 
@@ -504,7 +504,7 @@ else if (timeinfo->tm_mon == 3 && timeinfo->tm_mday== 9 && timeinfo->tm_hour== 2
 
 **Bukti Periode Dua    :**
 
-![Bukti1B](soal1/)
+https://user-images.githubusercontent.com/74223938/115844446-06969880-a44a-11eb-9601-b54a217497dc.mp4
 
 **Kendala :**\
 Tidak ada.
