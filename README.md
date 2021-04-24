@@ -691,8 +691,8 @@ Archive:  pets.zip
 ```
 **Bukti   :**
 
-![Bukti2A](soal2/Bukti2A.png)
-![Bukti2A(1)](soal2/Bukti2a(1).png)
+![Bukti2A](soal2/Bukti2A.PNG)
+![Bukti2A(1)](soal2/Bukti2a(2).PNG)
 
 **Kendala :**\
 awalnya masih bingung bagaimana cara menunjuk lokasi file atau folder menggunakan char
