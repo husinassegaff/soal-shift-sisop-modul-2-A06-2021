@@ -6,7 +6,7 @@
 #include <wait.h>
 #include <dirent.h>
 
-char ziplocation[] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
+char ziplocation[] = "/home/husin/modul2/petshop";
 const char semicolon[] = ";";
 const char udr[] = "_";
 
@@ -31,7 +31,7 @@ void listDir(char *basePath)
 
     char typepetsfoldername[200] = "";
     char filepetsname[100] = "";
-    char typepetslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
+    char typepetslocation[100] = "/home/husin/modul2/petshop";
     char *token;
     char *limit;
     char *age;
@@ -54,7 +54,7 @@ void listDir(char *basePath)
     {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_type == DT_DIR)
         {
-            char petslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
+            char petslocation[100] = "/home/husin/modul2/petshop";
             strcat(petslocation,"/");
             strcat(petslocation, dp->d_name);
             char *argvrmfolder[] = {"rm", "-rf", petslocation, NULL};

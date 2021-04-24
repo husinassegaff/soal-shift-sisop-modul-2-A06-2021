@@ -514,30 +514,188 @@ Tidak ada.
 **[Source Code Soal 2](https://github.com/husinassegaff/soal-shift-sisop-modul-2-A06-2021/blob/main/soal2/soal2.c)**
 
 **Deskripsi:**\
-deskripsi.
+Pada soal ini diminta untuk mengkategorikan foto-foto hewan pada file zip menggunakan program. Selain mengkategorikan, juga harus mengubah nama file dan menyimpan data hewan ke file berbentuk .txt
+
+**Catatan:**\
+- Setiap data peliharaan disimpan sebagai nama foto dengna format **[jenis peliharaan]:[nama peliharaan:[umumr peliharaan dalam tahun]**. Apabila terdapat lebih dari satu peliharaan, maka data dipisahkan menggunakan *underscore*
+- Tidak diperbolehkan menggunakan fungsi **system()**, **mkdir()**, dan **rename()**
+- Menggunakan **fork** dan **exec**
+
+
+Adapun untuk library yang kami gunakan adalah sebagai berikut,
+
+```c
+#include <stdio.h>      // library standar
+#include <sys/types.h>  // penghasil proses
+#include <stdlib.h>     // kontrol proses
+#include <unistd.h>     // interaksi dengan POSIX
+#include <string.h>     // untuk manipulasi string
+#include <wait.h>       // agar program tidak terhenti pasca exec ()
+#include <dirent.h>     // untuk interaksi terhadap direktory dan isinya
+```
+
+Juga membuat fungsi yang mengeksekusi `exec` agar programnya tidak terlalu panjang. Fungsinya diberi nama `ForkWaitFunction()` sebagai berikut,
+
+```c
+void ForkWaitFunction(char bash[], char *arg[]){
+    int status;
+    pid_t child;
+    child = fork();
+    if(child == 0){
+        execv(bash, arg);
+    }
+    else{
+        ((wait(&status))>0);
+    }
+}
+```
+
 
 ### Soal 2.a
 **Deskripsi:**\
-deskripsi.
+Diminta untuk mengekstraksi zip yang telah diberikan ke dalam folder `/home/[user]/modul2/petshop`. Serta menghapus folder-folder yang berada di dalam zip tersebut yang tidak digunakan
 
 **Pembahasan:**
 ```c
-//kode
+...
+char ziplocation[] = "/home/husin/modul2/petshop";
+const char semicolon[] = ";";
+const char udr[] = "_";
+
+int main() {
+    int status;
+    pid_t child1;
+
+    char *argvmkdirpets[] = {"mkdir", "petshop", NULL};
+    char *argvunzippets[] = {"unzip", "pets.zip", "-d", "petshop", NULL};
+    
+    ForkWaitFunction("/bin/mkdir", argvmkdirpets);
+    ForkWaitFunction("/usr/bin/unzip", argvunzippets);
+    
+    listDir(ziplocation);
+
+    return 0;
+}
+
+void listDir(char *basePath)
+{
+
+    struct dirent *dp;
+
+    FILE * fp;
+
+    char typepetsfoldername[200] = "";
+    char filepetsname[100] = "";
+    char typepetslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
+    char *token;
+    char *limit;
+    char *age;
+    char name[20];
+    char echoke[100];
+    char file[20];
+    char file1[20];
+    char binatang[20];
+    char test[20];
+    char hewan[100];
+    char text[100];
+
+    int notif = 0;
+    int cek = 0;
+    int more = 0;
+    
+    DIR *dir = opendir(basePath);
+
+    while ((dp = readdir(dir)))
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_type == DT_DIR)
+        {
+            char petslocation[100] = "/home/osd0081/Desktop/Sisop/soal-shift-sisop-modul-2-A06-2021/soal2/petshop";
+            strcat(petslocation,"/");
+            strcat(petslocation, dp->d_name);
+            char *argvrmfolder[] = {"rm", "-rf", petslocation, NULL};
+            ForkWaitFunction("/bin/rm", argvrmfolder);
+        }
+    }
+...
 ```
 
-- 
--
--
-
+- Menggunakan char `*argvmkdirpets[]` untuk membuat perintah buat folder petshop, begitu juga untuk `*argvunzippets[]` berisi perintah unzip folder zip pets yang telah diunduh sebelumnya. Kemudian dijalankan dua perintah tersebut dengan fungsi `ForkWaitFunction()`
+- Setelah itu, menuju ke fungsi `listDir()` dengan menunjuk lokasi folder petshop yang disimpan di variabel **ziplocation**. 
+- Fungsi ini menggunakan template yang ada di modul pada bagian **Directory Listing** yang rekursif. Hanya saja telah dimodifikasi mengikuti keperluan soal
+- Jadi pada `while ((dp = readdir(dir)))` memeriksa apakah lokasi folder yang ditunjuk ada atau tidak, maka jika ada akan menuju percabangan yang memeriksa apakah lokasi yang ditunjuk saat ini berbentuk folder atau tidak.
+- Apabile berbentuk folder, maka percabangan if akan dieksekusi berupa pembuatan directory folder tersebut dengan memanipulasi char menggunakan `strcat` atau menggabungkan char pertama dengan char kedua
+- Jadi, awalnya inisiasi char `petslocation` yang berupa **/home/husin/modul2/petshop**
+- Lalu digabungkan dengan karakter **/** menguunakan `strcat(petslocation,"/")`, sehingga menjadi **/home/husin/modul2/petshop/**
+- Kemudian, menggabungkan kembali dengan nama folder yang tengah ditunjuk pada while saat ini. Tentunya menggunakan `strcat(petslocation, dp->d_name)` yang hasilnya akan berbentuk **/home/husin/modul2/petshop/[nama_folder]**
+- Kemudian membuat perintah bash untuk menghapus folder tersebut dan disimpan di variabel char `*argvrmfolder[]` dan dieksekusi pada fungsi `ForkWaitFunction()`
+  
 ```
-hasil
+Archive:  pets.zip
+   creating: petshop/apex_cheats/
+  inflating: petshop/apex_cheats/chicken_dinner.CT  
+  inflating: petshop/betta;bella;0.6.jpg  
+  inflating: petshop/cat;angmry;7.jpg  
+  inflating: petshop/cat;atlas;0.6.jpg  
+  inflating: petshop/cat;ava;6_dog;walter;6.jpg  
+  inflating: petshop/cat;chester;5.jpg  
+  inflating: petshop/cat;chloe;4.jpg  
+  inflating: petshop/cat;echo;7.jpg  
+  inflating: petshop/cat;ellie;3.jpg  
+  inflating: petshop/cat;jasper;10.jpg  
+  inflating: petshop/cat;koda;11.jpg  
+  inflating: petshop/cat;luna;4.jpg  
+  inflating: petshop/cat;milo;0.5.jpg  
+  inflating: petshop/cat;neko;3_dog;daisy;4.jpg  
+  inflating: petshop/cat;oreo;7.jpg  
+  inflating: petshop/cat;reggie;8.jpg  
+  inflating: petshop/cat;remi;8.jpg  
+  inflating: petshop/cat;sus;6.jpg   
+  inflating: petshop/cat;tilly;6.jpg  
+  inflating: petshop/cat;tucker;3.jpg  
+  inflating: petshop/chicken;cocock;4.jpg  
+  inflating: petshop/dog;amo;6.jpg   
+  inflating: petshop/dog;angel;4.jpg  
+  inflating: petshop/dog;bruno;9.jpg  
+  inflating: petshop/dog;buster;12.jpg  
+  inflating: petshop/dog;charlie;5.jpg  
+  inflating: petshop/dog;cooper;2_cat;simba;4.jpg  
+  inflating: petshop/dog;gus;5.jpg   
+  inflating: petshop/dog;kobe;10.jpg  
+  inflating: petshop/dog;lalong;3.jpg  
+  inflating: petshop/dog;lola;4.jpg  
+  inflating: petshop/dog;max;4.jpg   
+  inflating: petshop/dog;maya;7_cat;nala;4.jpg  
+  inflating: petshop/dog;peanut;6.jpg  
+  inflating: petshop/dog;pearl;8.jpg  
+  inflating: petshop/dog;ruby;2.jpg  
+  inflating: petshop/dog;rufus;1.jpg  
+  inflating: petshop/frog;limey;3.jpg  
+  inflating: petshop/guinea pig;lulu;5.jpg  
+  inflating: petshop/guinea pig;otis;7.jpg  
+  inflating: petshop/hamster;rosie;2.jpg  
+  inflating: petshop/iguana;xena;4.jpg  
+  inflating: petshop/ilama;nova;11.jpg  
+   creating: petshop/musics/
+  inflating: petshop/musics/autotune-test.mp3  
+  inflating: petshop/musics/Joji - Sanctuary.mp3  
+  inflating: petshop/otter;longing;1.jpg  
+  inflating: petshop/parrot;cody;5.jpg  
+  inflating: petshop/parrot;poppy;2.jpg  
+  inflating: petshop/parrot;scrout;6.jpg  
+  inflating: petshop/rabbit;carrot;2.jpg  
+  inflating: petshop/rabbit;rufus;6.jpg  
+  inflating: petshop/racoon;bandit;5.jpg  
+  inflating: petshop/sheep;tilly;2.jpg  
+  inflating: petshop/tiger;sagan;10.jpg  
+   creating: petshop/unimportant_files/
 ```
 **Bukti   :**
 
 ![Bukti2A](soal2/Bukti2A.png)
+![Bukti2A(1)](soal2/Bukti2a(1).png)
 
 **Kendala :**\
-kendala.
+awalnya masih bingung bagaimana cara menunjuk lokasi file atau folder menggunakan char
 
 ### Soal 2.b
 
