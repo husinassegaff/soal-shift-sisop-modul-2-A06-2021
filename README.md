@@ -1189,7 +1189,7 @@ cp: '/home/husin/modul2/petshop/cat;remi;8.jpg' and '/home/husin/modul2/petshop/
 ![Bukti2E](soal2/Bukti2E.png)
 
 **Kendala :**\
-Kendala.
+Untuk kendalanya terdapat kesulitan saat melakukan rename pada file yang memiliki dua jenis hewan dan juga memindahkan foldernya
 
 ---
 ## Soal 3 
