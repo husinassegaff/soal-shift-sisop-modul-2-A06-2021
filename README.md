@@ -692,17 +692,20 @@ Archive:  pets.zip
 **Bukti   :**
 
 ![Bukti2A](soal2/Bukti2A.PNG)
-![Bukti2A(1)](soal2/Bukti2a(2).PNG)
+![Bukti2A(2)](soal2/Bukti2A(2).PNG)
 
 **Kendala :**\
 awalnya masih bingung bagaimana cara menunjuk lokasi file atau folder menggunakan char
 
-### Soal 2.b
+### Soal 2.b 
 
 **Deskripsi:**\
-deskripsi.
+Pada soal 2.b diminta untuk membuat sub-folder berdasarkan jenis-jenis hewan peliharaan pada nama file
 
-**Pembahasan:**
+**Catatan:**\
+Pembahasan digabung di bahasan 2.e
+
+<!-- **Pembahasan:**
 ```c
 //kode
 ```
@@ -719,13 +722,16 @@ hasil
 ![Bukti2B](soal2/Bukti2B.png)
 
 **Kendala :**
-kendala.
+kendala. -->
 
 ### Soal 2.c
 
 **Deskripsi:**\
-deskripsi.
+Setelah folder masing-masing jenis hewan sudah dibuat, maka foto hewan dipindahkan ke masing-masing folder yang sesuai dengan jenis hewannya. Dan juga harus diubah nama file foto menjadi **namapeliharaan.jpg**. Contoh, **/petshop/cat/joni.jpg**
 
+**Catatan:**\
+Pembahasan digabung di bahasan 2.e
+<!-- 
 **Pembahasan:**
 ```c
 //kode
@@ -744,13 +750,16 @@ hasil
 ![Bukti2C](soal2/Bukti2c.png)
 
 **Kendala :**\
-Kendala.
+Kendala. -->
 
 ### Soal 2.d
 
 **Deskripsi:**\
-deskripsi.
+Karena terdapat beberapa foto yang berisi dua jenis hewan, maka foto tersebut harus ada di masing-masing folder kedua jenis hewan. Contoh pada file foto **dog;baro;1_cat;join;2.jpg** harus dipindahkan ke folder **/petshop/cat/joni.jpg** dan **/petshop/dog/baro.jpg**
 
+**Catatan:**\
+Pembahasan digabung di bahasan 2.e
+<!-- 
 **Pembahasan:**
 ```c
 //kode
@@ -769,26 +778,412 @@ hasil
 ![Bukti2D](soal2/Bukti2D.png)
 
 **Kendala :**\
-Kendala.
+Kendala. -->
 
 ### Soal 2.e
 
 **Deskripsi:**\
-deskripsi.
+Dan yang terakhir, setiap folder jenis hewan harus terdapat file **keterangan.txt** yang berisikan nama dan umur hewan yang berada di folder tersebut. Adapun untuk contoh formatnya,
+
+```
+nama : joni
+umur : 3 tahun
+
+nama : miko
+umur : 2 tahun
+```
 
 **Pembahasan:**
 ```c
-//kode
+...
+void listDir(char *basePath)
+{
+
+    struct dirent *dp;
+
+    FILE * fp;
+
+    char typepetsfoldername[200] = "";
+    char filepetsname[100] = "";
+    char typepetslocation[100] = "/home/husin/modul2/petshop";
+    char *token;
+    char *limit;
+    char *age;
+    char name[20];
+    char echoke[100];
+    char file[20];
+    char file1[20];
+    char binatang[20];
+    char test[20];
+    char hewan[100];
+    char text[100];
+
+    int notif = 0;
+    int cek = 0;
+    int more = 0;
+    
+    DIR *dir = opendir(basePath);
+
+    DIR *mer = opendir(basePath);
+    while ((dp = readdir(mer)))
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_type != DT_DIR)
+        {
+
+            notif = 0;
+            cek = 0;
+            more = 0;
+
+            strcpy(file,dp->d_name);
+            strcpy(file1,dp->d_name);
+
+            strcpy(hewan,typepetslocation);
+            strcat(hewan,"/");
+
+            strcpy(filepetsname,typepetslocation);
+            strcat(filepetsname,"/");
+            strcat(filepetsname,dp->d_name);
+
+            limit = strtok(dp->d_name, udr);
+
+            while(limit != NULL)
+            {
+                more ++;
+                cek = 0;
+                notif = 0;  
+                strcpy(hewan,typepetslocation);
+                strcat(hewan,"/");
+                strcat(hewan,limit);
+                char *argvmvPets[]={"cp", filepetsname, hewan,NULL};
+                ForkWaitFunction("/bin/cp", argvmvPets);
+
+                
+                // printf("\nlimit = %s\n",limit);
+                limit = strtok(NULL,udr);    
+            }
+            if(more>1){
+                strcpy(hewan,typepetslocation);
+                strcat(hewan,"/");
+                strcat(hewan,file);
+                printf("\n%s\nmasuk\n",file);
+                char *argvrm[] = {"rm", hewan, NULL};
+                ForkWaitFunction("/bin/rm", argvrm);
+                continue;    
+            }
+        }
+    }
+    DIR *mar = opendir(basePath);
+    while ((dp = readdir(mar)))
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_type != DT_DIR)
+        {
+            strcpy(filepetsname,typepetslocation);
+            strcat(filepetsname,"/");
+            strcat(filepetsname,dp->d_name);
+
+            strcpy(file1,dp->d_name);
+
+            token = strtok(dp->d_name, semicolon);
+            char folder[20];
+            notif = 0;
+            cek = 0;
+
+            while(token != NULL)
+            {
+                if(cek == 0){
+                    strcpy(typepetsfoldername,typepetslocation);
+                    strcat(typepetsfoldername,"/");
+                    strcat(typepetsfoldername,token);
+                    strcpy(folder,token);
+
+                    char *argvmkdirTypePets[] = {"mkdir", "-p", typepetsfoldername, NULL};
+                    ForkWaitFunction("/bin/mkdir", argvmkdirTypePets);
+
+                    strcpy(text,typepetslocation);
+                    strcat(text,"/");
+                    strcat(text,token);
+                    strcat(text,"/keterangan.txt");
+
+                    char *argvmktxt[] = {"touch", text, NULL};
+                    ForkWaitFunction("/usr/bin/touch", argvmktxt);
+
+                    cek = 1;
+                    notif++;
+                    token = strtok(NULL, semicolon);
+                    continue;
+                }
+                else if((notif%2)==1&& cek == 1){
+                    strcpy(name,token);
+
+                    char nama[20];
+                    char mvke[100];
+                    char rename[100];
+
+                    strcpy(rename,typepetsfoldername);
+                    strcat(rename,"/");
+                    strcat(rename,file);                        
+
+                    strcpy(mvke,typepetsfoldername);
+                    strcat(mvke,"/");
+                    strcat(mvke,name);
+                    strcat(mvke,".jpg");
+
+                    strcpy(echoke,typepetsfoldername);
+                    strcat(echoke,"/keterangan.txt");
+
+                    strcpy(nama,"nama : ");
+                    strcat(nama, name);
+
+                    char *argvmvPets[]={"cp", hewan, typepetsfoldername,NULL};
+                    ForkWaitFunction("/bin/cp", argvmvPets);
+
+                    char *argvmvrnPets[] = {"mv", rename,mvke,NULL};
+                    ForkWaitFunction("/bin/mv", argvmvrnPets);
+
+                    fp = fopen(echoke,"a");
+                    fprintf(fp,"%s\n",nama);
+                    fclose(fp);
+
+                    notif++;
+                    token = strtok(NULL, semicolon);
+                    continue;
+                }else if((notif%2)==0&& cek == 1){
+                    
+                    if(strstr(token,"jpg")!= NULL){
+                        age = strtok(token, "jpg");
+                        while(age != NULL){
+                            age[strlen(age)-1] = '\0';
+                            fp = fopen(echoke,"a");
+                            fprintf(fp,"umur : %s\n\n",age);
+                            fclose(fp);
+                            age = strtok(NULL, ".jpg");
+                    }
+                    }else{
+                        fp = fopen(echoke,"a");
+                        fprintf(fp,"umur : %s\n\n",token);
+                        fclose(fp);
+                    } 
+                    notif++;
+                    token = strtok(NULL, semicolon);
+                    continue;                         
+                }
+                token = strtok(NULL, semicolon);
+            }
+
+            char *argvrm[] = {"rm", filepetsname, NULL};
+            ForkWaitFunction("/bin/rm", argvrm);
+        }
+    }
+    closedir(dir);
+}
+...
 ```
 
-- 
--
--
+- *Source code* di atas mencakup eksekusi pada penyelesan 2.b hingga 2.d, karena penyelesaiannya berjalan secara langsung dari 2.b sampai 2.e
+- Pada bagian
+  ```c
+  strcpy(file,dp->d_name);
+            strcpy(file1,dp->d_name);
 
-```
-hasil
-```
+            strcpy(hewan,typepetslocation);
+            strcat(hewan,"/");
 
+            strcpy(filepetsname,typepetslocation);
+            strcat(filepetsname,"/");
+            strcat(filepetsname,dp->d_name);
+
+            limit = strtok(dp->d_name, udr);
+  ```
+  Dilakukan manipulasi char agar menghasilkan directory file yang ingin dipindahkan.
+- Untuk ` strcpy(file,dp->d_name)` dan `strcpy(file1,dp->d_name)` berfungsi menyalin nama file yang tengah ditunjuk dan disimpan di char **file** serta **file1**
+- Kemudian `strcpy(hewan,typepetslocation)` serta `strcat(hewan,"/")` juga menyalin isi char **typepetslocation** ke **hewan**, kemudian ditambahkan **/** menggunakan strcat. variabel ini nantinya digunakan untuk menunjuk folder jenis hewan yang diinginkan
+- Adapun untuk variabel **filepetsname** hampir sama seperti **hewan**, hanya saja ini langsung menunjuk file yang ingin dipindahkan
+- Kemudian, variabel **limit** menyimpan potongan nama file hewan sebelum **_** menggunakan strtok. variabel ini akan menyimpan apabila file yang sedang ditunjuk adalah file yang memiliki dua jenis hewan berbeda. Apabila hanya satu jenis hewan, maka variabel **limit** masih kosong isinya
+- Pada bagian ini,
+  ```c
+    ...
+    while(limit != NULL)
+        {
+            more ++;
+            cek = 0;
+            notif = 0;  
+            strcpy(hewan,typepetslocation);
+            strcat(hewan,"/");
+            strcat(hewan,limit);
+            char *argvmvPets[]={"cp", filepetsname, hewan,NULL};
+            ForkWaitFunction("/bin/cp", argvmvPets);
+
+            limit = strtok(NULL,udr);    
+        }
+        if(more>1){
+            strcpy(hewan,typepetslocation);
+            strcat(hewan,"/");
+            strcat(hewan,file);
+            // printf("\n%s\nmasuk\n",file);
+            char *argvrm[] = {"rm", hewan, NULL};
+            ForkWaitFunction("/bin/rm", argvrm);
+            continue;    
+        }
+  ```
+  berfungsi apabila variabel **limit** terdapat isinya, maka akan memindahkan file dari lokasi directory **filepetsname** ke **hewan** dengan menggunakan `*argvmvpets[]`
+- Kemudian, pada perulangannya dilakukan untuk menghapus file yang ditunjuk
+- Kemudian pada bagian
+    ```c
+    DIR *mar = opendir(basePath);
+    while ((dp = readdir(mar)))
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_type != DT_DIR)
+        {
+            strcpy(filepetsname,typepetslocation);
+            strcat(filepetsname,"/");
+            strcat(filepetsname,dp->d_name);
+
+            strcpy(file1,dp->d_name);
+
+            token = strtok(dp->d_name, semicolon);
+            char folder[20];
+            notif = 0;
+            cek = 0;
+
+            while(token != NULL)
+            {
+                if(cek == 0){
+                    strcpy(typepetsfoldername,typepetslocation);
+                    strcat(typepetsfoldername,"/");
+                    strcat(typepetsfoldername,token);
+                    strcpy(folder,token);
+
+                    char *argvmkdirTypePets[] = {"mkdir", "-p", typepetsfoldername, NULL};
+                    ForkWaitFunction("/bin/mkdir", argvmkdirTypePets);
+
+                    strcpy(text,typepetslocation);
+                    strcat(text,"/");
+                    strcat(text,token);
+                    strcat(text,"/keterangan.txt");
+
+                    char *argvmktxt[] = {"touch", text, NULL};
+                    ForkWaitFunction("/usr/bin/touch", argvmktxt);
+
+                    cek = 1;
+                    notif++;
+                    token = strtok(NULL, semicolon);
+                    continue;
+                }
+                else if((notif%2)==1&& cek == 1){
+                    strcpy(name,token);
+
+                    char nama[20];
+                    char mvke[100];
+                    char rename[100];
+
+                    strcpy(rename,typepetsfoldername);
+                    strcat(rename,"/");
+                    strcat(rename,file);                        
+
+                    strcpy(mvke,typepetsfoldername);
+                    strcat(mvke,"/");
+                    strcat(mvke,name);
+                    strcat(mvke,".jpg");
+
+                    strcpy(echoke,typepetsfoldername);
+                    strcat(echoke,"/keterangan.txt");
+
+                    strcpy(nama,"nama : ");
+                    strcat(nama, name);
+
+                    char *argvmvPets[]={"cp", hewan, typepetsfoldername,NULL};
+                    ForkWaitFunction("/bin/cp", argvmvPets);
+
+                    char *argvmvrnPets[] = {"mv", rename,mvke,NULL};
+                    ForkWaitFunction("/bin/mv", argvmvrnPets);
+
+                    fp = fopen(echoke,"a");
+                    fprintf(fp,"%s\n",nama);
+                    fclose(fp);
+
+                    notif++;
+                    token = strtok(NULL, semicolon);
+                    continue;
+                }else if((notif%2)==0&& cek == 1){
+                    
+                    if(strstr(token,"jpg")!= NULL){
+                        age = strtok(token, "jpg");
+                        while(age != NULL){
+                            age[strlen(age)-1] = '\0';
+                            fp = fopen(echoke,"a");
+                            fprintf(fp,"umur : %s\n\n",age);
+                            fclose(fp);
+                            age = strtok(NULL, ".jpg");
+                    }
+                    }else{
+                        fp = fopen(echoke,"a");
+                        fprintf(fp,"umur : %s\n\n",token);
+                        fclose(fp);
+                    } 
+                    notif++;
+                    token = strtok(NULL, semicolon);
+                    continue;                         
+                }
+                token = strtok(NULL, semicolon);
+            }
+
+            char *argvrm[] = {"rm", filepetsname, NULL};
+            ForkWaitFunction("/bin/rm", argvrm);
+        }
+    }
+    ```
+    *source code* di atas melakukan pembuatan folder berdasarkan jenis hewan, juga menambahkan file **keterangan.txt** pada setiap folder
+- Juga sekaligus mengisi file **keterangan.txt** dengan nama serta umumr hewannya menggunakan `fprintf`
+
+```c
+cp: '/home/husin/modul2/petshop/dog;gus;5.jpg' and '/home/husin/modul2/petshop/dog;gus;5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;echo;7.jpg' and '/home/husin/modul2/petshop/cat;echo;7.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;angel;4.jpg' and '/home/husin/modul2/petshop/dog;angel;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/tiger;sagan;10.jpg' and '/home/husin/modul2/petshop/tiger;sagan;10.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;chloe;4.jpg' and '/home/husin/modul2/petshop/cat;chloe;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;max;4.jpg' and '/home/husin/modul2/petshop/dog;max;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;kobe;10.jpg' and '/home/husin/modul2/petshop/dog;kobe;10.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;ruby;2.jpg' and '/home/husin/modul2/petshop/dog;ruby;2.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;tilly;6.jpg' and '/home/husin/modul2/petshop/cat;tilly;6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/chicken;cocock;4.jpg' and '/home/husin/modul2/petshop/chicken;cocock;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;tucker;3.jpg' and '/home/husin/modul2/petshop/cat;tucker;3.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;bruno;9.jpg' and '/home/husin/modul2/petshop/dog;bruno;9.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;rufus;1.jpg' and '/home/husin/modul2/petshop/dog;rufus;1.jpg' are the same file
+cp: '/home/husin/modul2/petshop/guinea pig;otis;7.jpg' and '/home/husin/modul2/petshop/guinea pig;otis;7.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;atlas;0.6.jpg' and '/home/husin/modul2/petshop/cat;atlas;0.6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/parrot;poppy;2.jpg' and '/home/husin/modul2/petshop/parrot;poppy;2.jpg' are the same file
+cp: '/home/husin/modul2/petshop/rabbit;rufus;6.jpg' and '/home/husin/modul2/petshop/rabbit;rufus;6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;peanut;6.jpg' and '/home/husin/modul2/petshop/dog;peanut;6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/parrot;cody;5.jpg' and '/home/husin/modul2/petshop/parrot;cody;5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;buster;12.jpg' and '/home/husin/modul2/petshop/dog;buster;12.jpg' are the same file
+cp: '/home/husin/modul2/petshop/otter;longing;1.jpg' and '/home/husin/modul2/petshop/otter;longing;1.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;jasper;10.jpg' and '/home/husin/modul2/petshop/cat;jasper;10.jpg' are the same file
+cp: '/home/husin/modul2/petshop/betta;bella;0.6.jpg' and '/home/husin/modul2/petshop/betta;bella;0.6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;pearl;8.jpg' and '/home/husin/modul2/petshop/dog;pearl;8.jpg' are the same file
+cp: '/home/husin/modul2/petshop/racoon;bandit;5.jpg' and '/home/husin/modul2/petshop/racoon;bandit;5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;luna;4.jpg' and '/home/husin/modul2/petshop/cat;luna;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/frog;limey;3.jpg' and '/home/husin/modul2/petshop/frog;limey;3.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;lalong;3.jpg' and '/home/husin/modul2/petshop/dog;lalong;3.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;amo;6.jpg' and '/home/husin/modul2/petshop/dog;amo;6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;charlie;5.jpg' and '/home/husin/modul2/petshop/dog;charlie;5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/guinea pig;lulu;5.jpg' and '/home/husin/modul2/petshop/guinea pig;lulu;5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;ellie;3.jpg' and '/home/husin/modul2/petshop/cat;ellie;3.jpg' are the same file
+cp: '/home/husin/modul2/petshop/dog;lola;4.jpg' and '/home/husin/modul2/petshop/dog;lola;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;chester;5.jpg' and '/home/husin/modul2/petshop/cat;chester;5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/rabbit;carrot;2.jpg' and '/home/husin/modul2/petshop/rabbit;carrot;2.jpg' are the same file
+cp: '/home/husin/modul2/petshop/hamster;rosie;2.jpg' and '/home/husin/modul2/petshop/hamster;rosie;2.jpg' are the same file
+cp: '/home/husin/modul2/petshop/sheep;tilly;2.jpg' and '/home/husin/modul2/petshop/sheep;tilly;2.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;reggie;8.jpg' and '/home/husin/modul2/petshop/cat;reggie;8.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;sus;6.jpg' and '/home/husin/modul2/petshop/cat;sus;6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/iguana;xena;4.jpg' and '/home/husin/modul2/petshop/iguana;xena;4.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;milo;0.5.jpg' and '/home/husin/modul2/petshop/cat;milo;0.5.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;oreo;7.jpg' and '/home/husin/modul2/petshop/cat;oreo;7.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;angmry;7.jpg' and '/home/husin/modul2/petshop/cat;angmry;7.jpg' are the same file
+cp: '/home/husin/modul2/petshop/parrot;scrout;6.jpg' and '/home/husin/modul2/petshop/parrot;scrout;6.jpg' are the same file
+cp: '/home/husin/modul2/petshop/ilama;nova;11.jpg' and '/home/husin/modul2/petshop/ilama;nova;11.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;koda;11.jpg' and '/home/husin/modul2/petshop/cat;koda;11.jpg' are the same file
+cp: '/home/husin/modul2/petshop/cat;remi;8.jpg' and '/home/husin/modul2/petshop/cat;remi;8.jpg' are the same file
+```
 **Bukti :**
 
 ![Bukti2E](soal2/Bukti2E.png)
