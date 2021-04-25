@@ -1241,7 +1241,7 @@ Folder Created.
 
 **Bukti :**
 
-![Bukti3A](soal3/Bukti3A.PNG)
+![Bukti3](soal3/Bukti(1).PNG)<br><br>
 
 **Kendala :**\
 Masih belum ada kendala yang begitu besar, mungkin hanya memerlukan waktu untuk memikirkan algoritma dan syntaxnya.
@@ -1276,7 +1276,6 @@ if (child_id == 0)
     cetakdownloadsuccess(dir);
     sleep(1);
     makezip(dir);
-    printf("Process Completed.\n");
 }
 ...
 ```
@@ -1295,7 +1294,7 @@ Download Success.
 ```
 **Bukti :**
 
-![Bukti3B](soal3/Bukti3B.PNG)
+![Bukti3](soal3/Bukti(1).PNG)<br><br>
 
 **Kendala :**\
 Kendalanya adalah memikirkan agar sleep antara buat folder dengan buat file tidak tertumpuk dan awalnya salah dalam memahami soal. Karena folder dibuat setiap 40 detik dan 10 gambar diunduh setiap 5 detik dan membutuhkan waktu 50 detik, sehingga hal tersebut membuat 2 file yang sama saat 10 detik terakhir diletakkan pada 2 folder berbeda. Saya kira hal tersebut salah dan tidak diperbolehkan sehingga saya berpikir bagaimana kita berpindah direktori untuk download foto setelah 50 detik agar tidak terjadi kejadian overlap tadi. Ternyata, hal tersebut diperbolehkan.
@@ -1335,7 +1334,7 @@ Process Completed.
 
 **Bukti :**
 
-![Bukti3C](soal3/Bukti3C.png)
+![Bukti3](soal3/Bukti(1).PNG)<br><br>
 
 **Kendala :**\
 Kendala yang dialami adalah overflow pada character ASCII ketika melebihi nomer tertentu sehingga perlu sedikit trik untuk menyelesaikannya. Selain itu tidak ditemukan kendala yang begitu besar.
@@ -1350,7 +1349,7 @@ Membuat program dilakukan dengan fungsi bikinkiller() yang akan dijelaskan pada 
 
 **Bukti :**
 
-![Bukti3D](soal3/Bukti3D.png)
+![Bukti3D](soal3/Bukti(2).PNG)<br><br>
 
 **Kendala :**\
 Kendala akan dijelaskan pada soal 3e.
@@ -1403,7 +1402,7 @@ Killer Created.
 
 **Bukti :**
 
-![Bukti3E](soal3/Bukti3E.png)
+![Bukti3D](soal3/Bukti(3).PNG)<br><br>
 
 **Kendala :**\
 Kendalanya mungkin yaitu mencari syntax untuk membuat killernya itu sendiri, dan diperlukan chmod +x untuk menambahkan permission pada file killer.sh
