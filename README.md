@@ -1207,19 +1207,36 @@ Untuk kendalanya terdapat kesulitan saat melakukan rename pada file yang memilik
 ### Soal 3.a
 
 **Deskripsi:**\
-deskripsi.
+Membuat folder dengan nama yang diambil dari waktu sekarang dan dengan format [YYYY-mm-dd_HH:ii:ss].
 
 **Pembahasan:**
 ```c
-//kode
+...
+    int firstrun=1;
+    pid_t pid, child_id;
+    bikinkiller(argc,argv,(int)getpid());
+    printf("Killer Created.\n");
+    while(1)
+    {
+        setwaktusekarang();
+        child_id = fork();
+        if (child_id == 0)
+        {
+            buatfolder(buffer);
+        }
+	...
+    sleep(40);
+    }
+...
 ```
-
-- 
--
--
+-Proses dilakukan secara berulang terus menerus menggunakan while(1).
+-Setwaktusekarang digunakan untuk menuliskan waktu sekarang pada string buffer.
+-Kita fork agar ketika program melakukan execv, program dapat tetap berjalan.
+-Jika child, maka buat foldernya dengan nama sama dengan string buffer.
+-Sleep(40) untuk menunggu proses hingga 40 detik.
 
 ```
-hasil
+Folder Created.
 ```
 
 **Bukti :**
@@ -1227,48 +1244,93 @@ hasil
 ![Bukti3A](soal3/Bukti3A.PNG)
 
 **Kendala :**\
-Kendala.
+Masih belum ada kendala yang begitu besar, mungkin hanya memerlukan waktu untuk memikirkan algoritma dan syntaxnya.
 
 ### Soal 3.b
 
 **Deskripsi:**\
-deskripsi.
+Setiap direktori yang telah dibuat, diisi dengan foto dari picsum.photos dengan ukuran (n%1000) + 50 pixel dan dengan waktu sekarang sebagai namanya.
 
 **Pembahasan:**
 ```c
-//kode
+...
+while (opendir(buffer) == NULL);
+printf("Folder Created.\n");
+char dir[80];
+strcpy(dir,buffer);
+child_id = fork();
+if (child_id == 0)
+{
+    for (int a=0;a<10;a++)
+    {
+        getlink();
+        child_id = fork();
+        setwaktusekarang();
+        char finaldir[200];
+        sprintf(finaldir,"%s/%s",dir,buffer);
+        if (child_id==0)
+            downloadgambar(finaldir);
+        printf("Download Success.\n");
+        sleep(5);
+    }
+    cetakdownloadsuccess(dir);
+    sleep(1);
+    makezip(dir);
+    printf("Process Completed.\n");
+}
+...
 ```
 
-- 
--
--
+-Pertama kita pastikan folder telah terbentuk dengan while(opendir(buffer) == NULL).
+-Lalu kita copy string dari buffer (nama folder) ke string dir.
+-Fork dilakukan setelah folder terbentuk agar proses bercabang untuk menjalankan perintah soal nomor 2.
+-Loop hingga 10 kali karena setiap folder diisi dengan 10 foto.
+-Fungsi getlink() digunakan untuk mendapatkan link download sesuai dengan waktu sekarang.
+-Fork dilakukan kembali karena akan membutuhkan execv untuk menjalankan perintah wget pada fungsi downloadgambar().
+-setwaktusekarang() dijalankan untuk mendapatkan waktu sekarang ke buffer sebagai nama file foto.
+-Menentukan lokasi download gambar dengan string finaldir dari direktori yang tadi telah ditampung string dir dan dengan nama file foto buffer.
 
 ```
-hasil
+Download Success.
 ```
 **Bukti :**
 
 ![Bukti3B](soal3/Bukti3B.PNG)
 
 **Kendala :**\
-kendala.
+Kendalanya adalah memikirkan agar sleep antara buat folder dengan buat file tidak tertumpuk dan awalnya salah dalam memahami soal. Karena folder dibuat setiap 40 detik dan 10 gambar diunduh setiap 5 detik dan membutuhkan waktu 50 detik, sehingga hal tersebut membuat 2 file yang sama saat 10 detik terakhir diletakkan pada 2 folder berbeda. Saya kira hal tersebut salah dan tidak diperbolehkan sehingga saya berpikir bagaimana kita berpindah direktori untuk download foto setelah 50 detik agar tidak terjadi kejadian overlap tadi. Ternyata, hal tersebut diperbolehkan.
 
 ### Soal 3.c
 
 **Deskripsi:**\
-deskripsi.
+Setelah selesai memasukkan 10 file foto ke dalam direktori, program membuat file dengan nama "status.txt" berisi pesan Download Success yang dienkripsi dengan Caesar Cipher shift 5.
+Setelah itu folder di zip dan folder yang telah di zip, dihapus.
 
 **Pembahasan:**
+Pada soal 3.b, terdapat pemanggilan fungsi cetakdownloadsuccess(dir).
+Fungsi tersebut digunakan untuk membuat file "status.txt" dan codenya sebagai berikut.
 ```c
-//kode
+void cetakdownloadsuccess(char namafolder[])
+{
+    char downloadstatus[150];
+    char textdl[20] = "Download Success";
+    sprintf(downloadstatus, "%s/status.txt",namafolder);
+    chip(textdl,5);
+    FILE *downloaded = fopen(downloadstatus,"w");
+    fprintf(downloaded,"%s",textdl);
+    fclose(downloaded);
+}
 ```
-
-- 
--
--
+-Kita sediakan string downloadstatus untuk menampung nama file yang akan dibuat beserta nama direktorinya.
+-Kita sediakan string textdl untuk menampung isi status.txt.
+-Menuliskan nama file dan direktori tempat file disimpan ke dalam string downloadstatus.
+-Kita enkripsi dengan caesarcipher.
+-Kita gunakan fopen (untuk membuka bila file sudah ada, membuat bila belum ada) dengan parameter "w" yang berarti write.
+-Kita tuliskan string yang telah dienkripsi tadi kedalam file status.txt.
+-Menutup file status.txt.
 
 ```
-hasil
+Process Completed.
 ```
 
 **Bukti :**
@@ -1276,49 +1338,67 @@ hasil
 ![Bukti3C](soal3/Bukti3C.png)
 
 **Kendala :**\
-kendala
+Kendala yang dialami adalah overflow pada character ASCII ketika melebihi nomer tertentu sehingga perlu sedikit trik untuk menyelesaikannya. Selain itu tidak ditemukan kendala yang begitu besar.
 
 ### Soal 3.d
 
 **Deskripsi:**\
-deskripsi.
+Membuat sebuah program bash killer untuk menterminasi semua proses program, lalu menghapus dirinya sendiri.
 
 **Pembahasan:**
-```c
-//kode
-```
-
-- 
--
--
-
-```
-hasil
-```
+Membuat program dilakukan dengan fungsi bikinkiller() yang akan dijelaskan pada soal 3e.
 
 **Bukti :**
 
 ![Bukti3D](soal3/Bukti3D.png)
 
 **Kendala :**\
-kendala.
+Kendala akan dijelaskan pada soal 3e.
 
 ### Soal 3.e
 
 **Deskripsi:**\
-deskripsi.
+Program utama diberikan dua mode. mode pertama dijalankan dengan argumen "-z" yang membuat killer untuk menghentikan semua operasi.
+Sedangkan mode kedua dijalankan dengan argumen "-x" yang menghentikan program utama, namun membiarkan proses tiap direktori masih berjalan.
 
 **Pembahasan:**
 ```c
-//kode
-```
+void bikinkiller(int argc,char **argv, int pid)
+{
+    FILE *fkiller = fopen("killer.sh","w");
 
-- 
--
--
+    if (argc < 2)
+    {
+        printf("Kasih parameter dong yank :(\n");
+        exit(0);
+    }
+    if (strcmp(argv[1],"-z") == 0)
+    {
+        fprintf(fkiller, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
+    }
+    else if (strcmp(argv[1],"-x") == 0)
+    {
+        fprintf(fkiller, "#!/bin/bash\nkill %d\nrm \"$0\"", pid);
+    }
+
+    fclose(fkiller);
+
+    if(fork() == 0)
+    {
+        char *chmodarg[] = {"chmod", "+x", "killer.sh", NULL};
+        execv("/bin/chmod", chmodarg);
+    }
+}
+```
+-Pertama menggunakan perintah fopen() yang digunakan untuk membuka file bila ada dan membuat bila belum ada, dengan nama file killer.sh
+-Jika argumen program yang dijalankan adalah -z, maka menuliskan perintah untuh membunuh semua proses menggunakan syntax killall
+-Jika argumen program yang dijalankan adalah -x, maka menuliskan perintah untuk membunuh proses parent dengan menginputkan pid nya.
+-Meng-Close file setelahnya.
+-Menggunakan Fork pada program karena akan menjalankan execv dengan perintah chmod yang digunakan untuk menambahkan permission pada killer.sh.
+
 
 ```
-hasil
+Killer Created.
 ```
 
 **Bukti :**
@@ -1326,4 +1406,4 @@ hasil
 ![Bukti3E](soal3/Bukti3E.png)
 
 **Kendala :**\
-Kendala.
+Kendalanya mungkin yaitu mencari syntax untuk membuat killernya itu sendiri, dan diperlukan chmod +x untuk menambahkan permission pada file killer.sh
