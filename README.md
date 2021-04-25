@@ -1027,7 +1027,7 @@ void listDir(char *basePath)
   ```
   berfungsi apabila variabel **limit** terdapat isinya, maka akan memindahkan file dari lokasi directory **filepetsname** ke **hewan** dengan menggunakan `*argvmvpets[]`
 - Kemudian, pada perulangannya dilakukan untuk menghapus file yang ditunjuk
-- Kemudian pada bagian
+- Adapun pada bagian,
     ```c
     DIR *mar = opendir(basePath);
     while ((dp = readdir(mar)))
@@ -1133,7 +1133,7 @@ void listDir(char *basePath)
     }
     ```
     *source code* di atas melakukan pembuatan folder berdasarkan jenis hewan, juga menambahkan file **keterangan.txt** pada setiap folder
-- Juga sekaligus mengisi file **keterangan.txt** dengan nama serta umumr hewannya menggunakan `fprintf`
+- Juga sekaligus mengisi file **keterangan.txt** dengan nama serta umur hewannya menggunakan `fprintf`
 
 ```c
 cp: '/home/husin/modul2/petshop/dog;gus;5.jpg' and '/home/husin/modul2/petshop/dog;gus;5.jpg' are the same file
@@ -1185,8 +1185,16 @@ cp: '/home/husin/modul2/petshop/cat;koda;11.jpg' and '/home/husin/modul2/petshop
 cp: '/home/husin/modul2/petshop/cat;remi;8.jpg' and '/home/husin/modul2/petshop/cat;remi;8.jpg' are the same file
 ```
 **Bukti :**
-
-![Bukti2E](soal2/Bukti2E.png)
+- Bukti isi folder betta
+![Bukti2E](soal2/Bukti2E.PNG)<br><br>
+- Bukti isi folder cat
+![Bukti2E(2)](soal2/Bukti2E(2).PNG)<br><br>
+- Bukti isi folder chicken, dog, dan frog
+![Bukti2E(3)](soal2/Bukti2E(3).PNG)<br><br>
+- Bukti isi folder guinea, hnaster, iguana, ilama, otter, parrot, rabbit, dan racoon
+![Bukti2E(4)](soal2/Bukti2E(4).PNG)<br><br>
+- Bukti isi folder sheep dan tiger
+![Bukti2E(5)](soal2/Bukti2E(5).PNG)
 
 **Kendala :**\
 Untuk kendalanya terdapat kesulitan saat melakukan rename pada file yang memiliki dua jenis hewan dan juga memindahkan foldernya
